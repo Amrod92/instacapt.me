@@ -9,13 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.25.3",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@prisma/client": "^5.4.2",
+    "@tanstack/react-query": "^4.36.1",
+    "lucide-react": "^0.284.0",
+    "next": "13.5.4",
+    "next-auth": "^4.23.2",
+    "next-themes": "^0.2.1",
+    "openai": "^4.11.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "13.5.4"
+    "react-text-transition": "^3.1.0",
+    "react-uploader": "^3.43.0"
   },
   "devDependencies": {
     "autoprefixer": "^10",
     "postcss": "^8",
+    "prisma": "^5.4.2",
     "tailwindcss": "^3"
   }
 }
