@@ -14,18 +14,21 @@
     "@heroicons/react": "^2.0.18",
     "@prisma/client": "^5.4.2",
     "@tanstack/react-query": "^4.36.1",
+    "dotenv": "^16.3.1",
     "lucide-react": "^0.284.0",
     "next": "13.5.4",
     "next-auth": "^4.23.2",
     "next-themes": "^0.2.1",
-    "openai": "^4.11.1",
+    "openai": "^4.16.1",
     "react": "^18",
     "react-dom": "^18",
     "react-text-transition": "^3.1.0",
+    "react-tooltip": "^5.21.5",
     "react-uploader": "^3.43.0"
   },
   "devDependencies": {
     "autoprefixer": "^10",
+    "encoding": "^0.1.13",
     "postcss": "^8",
     "prisma": "^5.4.2",
     "tailwindcss": "^3"

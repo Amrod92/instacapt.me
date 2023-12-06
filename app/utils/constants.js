@@ -27,7 +27,6 @@ export const hashtags = [
 export const call_to_action = [
   { id: 1, name: 'Yes' },
   { id: 2, name: 'No' },
-  { id: 3, name: 'Negative' },
 ];
 
 export const category_or_theme = [
@@ -43,9 +42,15 @@ export const language_preference = [
 ];
 
 export const target_audience = [
-  { id: 1, name: 'Yes' },
-  { id: 2, name: 'No' },
-  { id: 3, name: 'Negative' },
+  { id: 1, name: 'General Consumers' },
+  { id: 2, name: 'Professionals/Business' },
+  { id: 3, name: 'Teens/Young Adults' },
+  { id: 4, name: 'Parents/Families' },
+  { id: 5, name: 'Travel Enthusiasts' },
+  { id: 6, name: 'Fitness and Health Advocates' },
+  { id: 7, name: 'Foodies' },
+  { id: 8, name: 'Pet Owners' },
+  { id: 9, name: 'Art and Design Lovers' },
 ];
 
 export const tone = [
