@@ -27,6 +27,7 @@ import {
   tone,
 } from '../utils/constants';
 import { Tooltip } from 'react-tooltip';
+import { formatDistanceToNow } from 'date-fns';
 
 // Get production API keys from Upload.io
 const uploader = Uploader({
@@ -49,10 +50,12 @@ const options = {
 };
 
 const UploadPage = () => {
-  // const [imageFile, setImageFile] = useState('');
-  const [imageFile, setImageFile] = useState(
-    'https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'
-  );
+  const [time, setTime] = useState('');
+
+  const [imageFile, setImageFile] = useState('');
+  // const [imageFile, setImageFile] = useState(
+  //   'https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'
+  // );
 
   const [sentimentValueSelected, setSentimentValueSelected] = useState([]);
   const [toneValueSelected, setToneValueSelected] = useState([]);
@@ -67,9 +70,11 @@ const UploadPage = () => {
   const [targetAudianceValueSelected, setTargetAudianceValueSelected] =
     useState([]);
   const [responseData, setResposeData] = useState([]);
+  const [loadingData, setLoadingData] = useState(false);
 
   const handleSubmitGenerateCaption = async e => {
     e.preventDefault();
+    setLoadingData(true);
 
     // Check if 'hashtags' is set to 'yes' to include them
     const includeHashtags = hashtagsValueSelected.name.toLowerCase() === 'yes';
@@ -112,11 +117,51 @@ const UploadPage = () => {
       // Get the JSON response body
       const result = await response.json();
 
+      setLoadingData(false);
       setResposeData(result);
     } catch (error) {
       console.error('There was a problem with the fetch:', error);
     }
   };
+
+  const copyToClipboard = () => {
+    navigator.clipboard
+      .writeText(responseData.content)
+      .then(() => {
+        // Handle successful copy
+        console.log('Text copied to clipboard');
+      })
+      .catch(err => {
+        // Handle error
+        console.error('Failed to copy text: ', err);
+      });
+  };
+
+  const formatRelativeTime = date => {
+    const distance = formatDistanceToNow(date, { addSuffix: false });
+    return distance
+      .replace('less than a minute', 'now')
+      .replace(' minute', 'm')
+      .replace(' minutes', 'm')
+      .replace(' hour', 'h')
+      .replace(' hours', 'h')
+      .replace(' day', 'd')
+      .replace(' days', 'd');
+  };
+
+  useEffect(() => {
+    if (imageFile) {
+      const createdAt = new Date(); // Set to current date and time if imageFile is not empty
+      const updateTime = () => {
+        setTime(formatRelativeTime(createdAt));
+      };
+
+      updateTime();
+      const intervalId = setInterval(updateTime, 60000); // Update every minute
+
+      return () => clearInterval(intervalId);
+    }
+  }, [imageFile]);
 
   return (
     <div className='mt-20'>
@@ -216,7 +261,6 @@ const UploadPage = () => {
                 selectedStateValue: setLanguageValueSelected,
               }}
             />
-
             <OptionSection
               label='Target Audience'
               tooltipText='Knowing the target audience can help in crafting a caption that resonates well.'
@@ -260,7 +304,7 @@ const UploadPage = () => {
                   </div>
 
                   <div className='col-span-4 text-sm font-semibold'>
-                    in.famous
+                    InstaCapt.me <span className='text-gray-400'>• {time}</span>
                   </div>
 
                   <div className=''>
@@ -281,62 +325,70 @@ const UploadPage = () => {
                   </div>
                 </header>
 
-                <Image
-                  className='mx-auto mb-3 shadow-lg'
-                  //src={imageFile[0] ?? ''}
-                  src={imageFile ?? ''}
-                  alt={'lol'}
-                  width={500}
-                  height={500}
-                />
+                {imageFile[0] ? (
+                  <Image
+                    className='mx-auto mb-3 shadow-lg'
+                    src={imageFile[0] ?? ''}
+                    // src={imageFile ?? ''}
+                    alt={'Glorious picture to generate caption'}
+                    width={500}
+                    height={500}
+                  />
+                ) : (
+                  <div class='max-w-sm rounded overflow-hidden shadow-lg animate-pulse'>
+                    <div class='h-48 bg-gray-300'></div>
+                  </div>
+                )}
 
                 <div className='flex flex-col gap-3 p-4'>
-                  <div className='flex flex-row gap-3'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='h-6 w-6'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      stroke='currentColor'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth='2'
-                        d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
-                      />
-                    </svg>
+                  <div className='flex justify-between gap-3'>
+                    {/* Group for the first three SVGs */}
+                    <div className='flex gap-3'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='h-6 w-6'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth='2'
+                          d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+                        />
+                      </svg>
 
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='h-6 w-6'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      stroke='currentColor'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth='2'
-                        d='M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z'
-                      />
-                    </svg>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='h-6 w-6'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth='2'
+                          d='M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z'
+                        />
+                      </svg>
 
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='h-6 w-6'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      stroke='currentColor'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth='2'
-                        d='M12 19l9 2-9-18-9 18 9-2zm0 0v-8'
-                      />
-                    </svg>
-
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='h-6 w-6'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth='2'
+                          d='M12 19l9 2-9-18-9 18 9-2zm0 0v-8'
+                        />
+                      </svg>
+                    </div>
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
                       className='h-6 w-6'
@@ -353,15 +405,51 @@ const UploadPage = () => {
                     </svg>
                   </div>
 
-                  <div className='text-sm font-semibold'>10,552 Likes</div>
-
                   <div className='text-sm'>
-                    <span className='font-semibold'>in.famous</span>{' '}
-                    {responseData.content}
+                    Liked by{' '}
+                    <a href='https://www.instagram.com/zuck/' target='_blank'>
+                      <span className='text-sm font-semibold'>zuck</span>
+                    </a>{' '}
+                    and <span className='text-sm font-semibold'>others</span>
                   </div>
 
+                  {responseData.content && !loadingData ? (
+                    <>
+                      <div className='text-sm'>
+                        <span className='font-semibold'>InstaCapt.me</span>{' '}
+                        {responseData.content}{' '}
+                      </div>
+                      <button
+                        onClick={copyToClipboard}
+                        className='flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200'
+                      >
+                        <svg
+                          width='24'
+                          height='24'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='icon-md'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            clipRule='evenodd'
+                            d='M12 4C10.8954 4 10 4.89543 10 6H14C14 4.89543 13.1046 4 12 4ZM8.53513 4C9.22675 2.8044 10.5194 2 12 2C13.4806 2 14.7733 2.8044 15.4649 4H17C18.6569 4 20 5.34315 20 7V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V7C4 5.34315 5.34315 4 7 4H8.53513ZM8 6H7C6.44772 6 6 6.44772 6 7V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V7C18 6.44772 17.5523 6 17 6H16C16 7.10457 15.1046 8 14 8H10C8.89543 8 8 7.10457 8 6Z'
+                            fill='currentColor'
+                          ></path>
+                        </svg>
+                      </button>
+                    </>
+                  ) : null}
+                  {loadingData ? (
+                    <div class='max-w-sm animate-pulse overflow-hidden rounded'>
+                      <div class='mb-2 h-6 bg-gray-300'></div>
+                      <div class='h-4 w-2/3 bg-gray-300'></div>
+                    </div>
+                  ) : null}
+
                   <div className='text-sm text-gray-500'>
-                    View all 877 comments
+                    View all 562 comments
                   </div>
 
                   <div className='text-xs text-gray-400'>2 HOURS AGO</div>
