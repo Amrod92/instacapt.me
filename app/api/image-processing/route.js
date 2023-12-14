@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(1, '1 m'),
+  limiter: Ratelimit.slidingWindow(5, '1 d'),
   analytics: true,
 });
 

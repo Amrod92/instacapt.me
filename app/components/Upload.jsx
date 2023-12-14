@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Uploader } from 'uploader';
 import { UploadDropzone } from 'react-uploader';
 import Image from 'next/image';
-import DropdownMenu from './dropdown-menu';
 import { captionPrompt } from '../helpers/gpt-prompt';
 import {
   SentimentIcon,
@@ -39,14 +38,12 @@ const uploader = Uploader({
 // Customize the dropzone UI (see "customization"):
 const options = {
   multi: false,
-
   // Comment out this line & use 'onUpdate' instead of
   // 'onComplete' to have the dropzone close after upload.
   showFinishButton: true,
-
   styles: {
     colors: {
-      primary: '#377dff',
+      primary: '#a855f7',
     },
   },
 };
