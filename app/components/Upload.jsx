@@ -26,6 +26,8 @@ import {
   target_audience,
   tone,
 } from '../utils/constants';
+import { convertSecondstoTime } from '../utils/converter-limiter';
+import CountdownTimer from './CountdownTimer';
 import { Tooltip } from 'react-tooltip';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -50,13 +52,13 @@ const options = {
 };
 
 const UploadPage = () => {
+  //TODO: Implement how many captions are left, for instance 3 out of 5
   const [time, setTime] = useState('');
-
+  const [retryAfter, setRetryAfter] = useState(null);
   const [imageFile, setImageFile] = useState('');
   // const [imageFile, setImageFile] = useState(
   //   'https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'
-  // );
-
+  // ); example image
   const [sentimentValueSelected, setSentimentValueSelected] = useState([]);
   const [toneValueSelected, setToneValueSelected] = useState([]);
   const [captionValueSelected, setCaptionValueSelected] = useState([]);
@@ -71,6 +73,10 @@ const UploadPage = () => {
     useState([]);
   const [responseData, setResposeData] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
+
+  const handleTimerFinish = () => {
+    setTimeout(() => setRetryAfter(null), 0);
+  };
 
   const handleSubmitGenerateCaption = async e => {
     e.preventDefault();
@@ -98,20 +104,25 @@ const UploadPage = () => {
 
     try {
       // Make a POST request to the API
-      const response = await fetch(
-        'http://localhost:3000/api/image-processing',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch('/api/image-processing', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-      // Check for a successful response
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.status === 429) {
+        setLoadingData(false);
+        const responseSecondLimitAPI = response.headers.get('retry-after');
+        const convertedSecondstoTimeStamp = convertSecondstoTime(
+          responseSecondLimitAPI
+        );
+        setRetryAfter(responseSecondLimitAPI);
+        console.error(
+          'Error checking upload limit:',
+          convertedSecondstoTimeStamp
+        );
       }
 
       // Get the JSON response body
@@ -128,11 +139,9 @@ const UploadPage = () => {
     navigator.clipboard
       .writeText(responseData.content)
       .then(() => {
-        // Handle successful copy
         console.log('Text copied to clipboard');
       })
       .catch(err => {
-        // Handle error
         console.error('Failed to copy text: ', err);
       });
   };
@@ -191,6 +200,13 @@ const UploadPage = () => {
           {/* Left Side */}
           <div>
             <h2 className='text-center mb-5'>Caption Crafting Suite</h2>
+            {retryAfter != null && (
+              <CountdownTimer
+                endTimeInSeconds={retryAfter}
+                onTimerFinish={handleTimerFinish}
+              />
+            )}
+
             {/* Sentiment Section */}
             <OptionSection
               label='Sentiment'
@@ -335,8 +351,8 @@ const UploadPage = () => {
                     height={500}
                   />
                 ) : (
-                  <div class='max-w-sm rounded overflow-hidden shadow-lg animate-pulse'>
-                    <div class='h-48 bg-gray-300'></div>
+                  <div className='max-w-sm rounded overflow-hidden shadow-lg animate-pulse'>
+                    <div className='h-48 bg-gray-300'></div>
                   </div>
                 )}
 
@@ -413,7 +429,14 @@ const UploadPage = () => {
                     and <span className='text-sm font-semibold'>others</span>
                   </div>
 
-                  {responseData.content && !loadingData ? (
+                  {loadingData && !responseData.content && !retryAfter && (
+                    <div className='max-w-sm animate-pulse overflow-hidden rounded'>
+                      <div className='mb-2 h-6 bg-gray-300'></div>
+                      <div className='h-4 w-2/3 bg-gray-300'></div>
+                    </div>
+                  )}
+                  {(responseData.content && !loadingData && retryAfter) ||
+                  (responseData.content && !loadingData && !retryAfter) ? (
                     <>
                       <div className='text-sm'>
                         <span className='font-semibold'>InstaCapt.me</span>{' '}
@@ -440,14 +463,12 @@ const UploadPage = () => {
                         </svg>
                       </button>
                     </>
-                  ) : null}
-                  {loadingData ? (
-                    <div class='max-w-sm animate-pulse overflow-hidden rounded'>
-                      <div class='mb-2 h-6 bg-gray-300'></div>
-                      <div class='h-4 w-2/3 bg-gray-300'></div>
+                  ) : loadingData && !retryAfter ? (
+                    <div className='max-w-sm animate-pulse overflow-hidden rounded'>
+                      <div className='mb-2 h-6 bg-gray-300'></div>
+                      <div className='h-4 w-2/3 bg-gray-300'></div>
                     </div>
                   ) : null}
-
                   <div className='text-sm text-gray-500'>
                     View all 562 comments
                   </div>

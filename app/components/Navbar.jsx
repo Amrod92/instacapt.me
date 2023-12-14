@@ -17,11 +17,17 @@ const Navbar = () => {
         </>
 
         {/* menu  */}
-        <div className='hidden text-center lg:flex lg:items-center'></div>
+        <>
+          <div className='hidden text-center lg:flex lg:items-center'>
+            <Link href='/info'>
+              <p>Info</p>
+            </Link>
+          </div>
+        </>
 
-        <div className='nav__item mr-3 hidden space-x-4 lg:flex '>
+        {/* <div className='nav__item mr-3 hidden space-x-4 lg:flex '>
           <ThemeSwitcher />
-        </div>
+        </div> */}
       </nav>
     </div>
   );
