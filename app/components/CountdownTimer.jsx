@@ -32,9 +32,9 @@ const CountdownTimer = ({ endTimeInSeconds, onTimerFinish }) => {
   }, [remainingSeconds, onTimerFinish]);
 
   return (
-    <div>
+    <div className='mb-5'>
       <span className='text-red-500'>
-        Looks like you're out of time! Use it again in:{' '}
+        🚫 We've run out of words! Please retry in:{' '}
         {convertSecondstoTime(remainingSeconds)}
       </span>
     </div>

@@ -8,15 +8,13 @@ const openai = new OpenAI({
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(5, '1 d'),
+  limiter: Ratelimit.slidingWindow(15, '1 d'),
   analytics: true,
 });
 
 export async function POST(request) {
   const ip_address = request.headers.get('x-forwarded-for') ?? '';
-  const { success, limit, reset, remaining } = await ratelimit.limit(
-    ip_address
-  );
+  const { success, reset, remaining } = await ratelimit.limit(ip_address);
 
   if (!success) {
     const now = Date.now();
@@ -25,8 +23,6 @@ export async function POST(request) {
       status: 429,
       headers: {
         ['retry-after']: `${retryAfter}`,
-        'X-RateLimit-Remaining': remaining.toString(),
-        'X-RateLimit-Limit': limit.toString(),
       },
     });
   }
@@ -60,6 +56,7 @@ export async function POST(request) {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
+          ['remaning-limit']: `${remaining}`,
         },
       }
     );
