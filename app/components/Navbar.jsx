@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import ThemeSwitcher from './ThemeSwitcher';
 import instacapt_logo from '../../public/instacapt_logo.png';
 import Image from 'next/image';
 
@@ -32,10 +31,6 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
-
-        {/* <div className='nav__item mr-3 hidden space-x-4 lg:flex '>
-          <ThemeSwitcher />
-        </div> */}
       </nav>
       <hr className='my-6 border-gray-200 md:my-8 dark:border-gray-700' />
     </div>
