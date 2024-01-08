@@ -177,9 +177,9 @@ const UploadPage = () => {
   }, [imageFile]);
 
   return (
-    <div className='mt-20'>
+    <div className='mt-5 sm:mt-20'>
       {imageFile.length == 0 ? (
-        <div className='flex flex-1 w-full flex-col items-center justify-center px-4 mt-15'>
+        <div className='flex flex-col items-center justify-center w-full px-4 mt-5'>
           <UploadDropzone
             uploader={uploader} // Required.
             options={options} // Optional.
@@ -200,9 +200,9 @@ const UploadPage = () => {
           />
         </div>
       ) : (
-        <div className='grid grid-cols-2 gap-2 w-full items-center justify-center px-4 mt-15 mx-auto max-w-4xl'>
+        <div className='flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl'>
           {/* Left Side */}
-          <div>
+          <div className='w-full lg:w-1/2 p-2'>
             <h2 className='text-center mb-5'>Caption Crafting Suite</h2>
             {retryAfter != null && (
               <CountdownTimer
@@ -343,55 +343,53 @@ const UploadPage = () => {
             </div>
           </div>
           {/* Right Side */}
-          <div className='ml-10'>
-            <div className='grid grid-cols-3 gap-16'>
-              <div className='w-96 border border-gray-300 bg-white'>
-                <header className='grid grid-cols-6 items-center border-b border-b-gray-300 p-3'>
-                  <div>
-                    <img
-                      src='https://picsum.photos/50/50'
-                      className='h-10 w-10 rounded-full'
-                    />
-                  </div>
+          <div className='w-full lg:w-1/2 p-2'>
+            <div className='space-y-4'>
+              <div className='max-w-md lg:max-w-full mx-auto border border-gray-300 bg-white'>
+                <header className='flex items-center border-b border-b-gray-300 p-3'>
+                  <img
+                    src='https://picsum.photos/50/50'
+                    className='h-10 w-10 rounded-full'
+                    alt='Profile'
+                  />
 
-                  <div className='col-span-4 text-sm font-semibold'>
+                  <div className='flex-grow ml-3 text-sm font-semibold'>
                     InstaCapt.me <span className='text-gray-400'>• {time}</span>
                   </div>
 
-                  <div className=''>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      className='h-6 w-6'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      stroke='currentColor'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth='2'
-                        d='M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z'
-                      />
-                    </svg>
-                  </div>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-6 w-6'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth='2'
+                      d='M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z'
+                    />
+                  </svg>
                 </header>
 
                 {imageFile[0] ? (
-                  <Image
-                    className='mx-auto mb-3 shadow-lg'
-                    src={imageFile[0] ?? ''}
-                    // src={imageFile ?? ''}
-                    alt={'Glorious picture to generate caption'}
-                    width={500}
-                    height={500}
-                  />
+                  <div className='w-full'>
+                    <Image
+                      className='w-full'
+                      src={imageFile[0] ?? ''}
+                      alt='Glorious picture to generate caption'
+                      width={500}
+                      height={500}
+                    />
+                  </div>
                 ) : (
-                  <div className='max-w-sm rounded overflow-hidden shadow-lg animate-pulse'>
+                  <div className='animate-pulse'>
                     <div className='h-48 bg-gray-300'></div>
                   </div>
                 )}
 
-                <div className='flex flex-col gap-3 p-4'>
+                <div className='p-4'>
                   <div className='flex justify-between gap-3'>
                     {/* Group for the first three SVGs */}
                     <div className='flex gap-3'>
