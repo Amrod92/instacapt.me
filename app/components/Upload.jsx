@@ -198,6 +198,7 @@ const UploadPage = () => {
               }
             }}
           />
+          <span className='text-muted'>Image size limit is 5MB</span>
         </div>
       ) : (
         <div className='flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl'>
@@ -292,7 +293,7 @@ const UploadPage = () => {
 
             {responseData.content && !retryAfter && (
               <p className='text-sm mt-2'>
-                You have left {remainingUpload} captions left ✍️
+                You have {remainingUpload} captions left ✍️
               </p>
             )}
 
