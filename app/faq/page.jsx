@@ -86,8 +86,11 @@ function InformationPage() {
                       this service, you agree to and assume responsibility. It
                       is beyond our control, and WE DO NOT TAKE RESPONSIBILITY
                       FOR ANY UPLOADED IMAGE. For further information, please
-                      reach out and refer to the Bytescale and ChatGPT
-                      documentation.
+                      reach out and refer to the <a href='https://www.bytescale.com/docs/upload-widget/react' target='_blank'>
+                        <span className='font-semibold underline'>Bytescale</span>
+                    </a> and <a href='https://platform.openai.com/docs/guides/vision' target='_blank'>
+                        <span className='font-semibold underline'>ChatGPT</span>
+                    </a> documentation.
                     </Disclosure.Panel>
                   </>
                 )}

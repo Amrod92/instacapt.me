@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Uploader } from 'uploader';
+import toast, { Toaster } from 'react-hot-toast';
 import { UploadDropzone } from 'react-uploader';
 import Image from 'next/image';
+import instacapt_logo from '../../public/instacapt_logo.png';
 import { captionPrompt } from '../helpers/gpt-prompt';
 import {
   SentimentIcon,
@@ -131,6 +133,7 @@ const UploadPage = () => {
         const convertedSecondstoTimeStamp = convertSecondstoTime(
           responseSecondLimitAPI
         );
+        notifyRateLimiter();
         setRetryAfter(responseSecondLimitAPI);
         setRemainingUpload(0);
         console.error(
@@ -147,7 +150,9 @@ const UploadPage = () => {
 
       setLoadingData(false);
       setResposeData(result);
+      notifySuccessCaptionCreation();
     } catch (error) {
+      notifyFailedCaptionCreation();
       console.error('There was a problem with the fetch:', error);
     }
   };
@@ -162,6 +167,19 @@ const UploadPage = () => {
         console.error('Failed to copy text: ', err);
       });
   };
+
+  const notifyClipboard = () => toast('Copied to clipboard!', {
+    icon: '📋',
+  });
+
+  const notifySuccessCaptionCreation = () => toast.success('Caption successfully created!');
+
+  const notifyFailedCaptionCreation = () => toast.error('Whoops! Our agent might on break. Try again later.');
+
+  const notifyRateLimiter = () => toast.success('We runned out of captions for you for today! Try again later.', {
+    icon: '⏳',
+    duration: 4000
+  });
 
   const formatRelativeTime = date => {
     const distance = formatDistanceToNow(date, { addSuffix: false });
@@ -211,7 +229,7 @@ const UploadPage = () => {
               }
             }}
           />
-          <span className='text-muted'>Image size limit is 5MB</span>
+          <span className='text-sm text-slate-400'>Image size limit is 5MB</span>
         </div>
       ) : (
         <div className='flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl'>
@@ -362,14 +380,23 @@ const UploadPage = () => {
             <div className='space-y-4'>
               <div className='max-w-md lg:max-w-full mx-auto border border-gray-300 bg-white'>
                 <header className='flex items-center border-b border-b-gray-300 p-3'>
-                  <img
-                    src='https://picsum.photos/50/50'
-                    className='h-10 w-10 rounded-full'
-                    alt='Profile'
-                  />
+                <div className="bg-gradient-to-tr from-yellow-400 to-purple-600 p-1 rounded-full">
+                  <div className="bg-white p-1 rounded-full">
+                    <Image
+                      className='rounded-full'
+                      src={instacapt_logo}
+                      alt='Profile Picture'
+                      width={35}
+                      height={35}
+                    />
+                  </div>
+                </div>
 
                   <div className='flex-grow ml-3 text-sm font-semibold'>
-                    InstaCapt.me <span className='text-gray-400'>• {time}</span>
+                    <a href='https://www.instagram.com/manlio_kt/' target='_blank'>
+                        <span className='text-sm font-semibold'>InstaCapt.Me</span>
+                    </a>
+                    <span className='text-gray-400'>• {time}</span>
                   </div>
 
                   <svg
@@ -486,12 +513,15 @@ const UploadPage = () => {
                   {(responseData.content && !loadingData && retryAfter) ||
                   (responseData.content && !loadingData && !retryAfter) ? (
                     <>
-                      <div className='text-sm'>
+                      <div className='text-sm mt-5'>
                         <span className='font-semibold'>InstaCapt.me</span>{' '}
                         {responseData.content}{' '}
                       </div>
                       <button
-                        onClick={copyToClipboard}
+                          onClick={() => {
+                            copyToClipboard();
+                            notifyClipboard();
+                          }}
                         className='flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200'
                       >
                         <svg
@@ -510,6 +540,7 @@ const UploadPage = () => {
                           ></path>
                         </svg>
                       </button>
+                      
                     </>
                   ) : loadingData && !retryAfter ? (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
@@ -517,7 +548,7 @@ const UploadPage = () => {
                       <div className='h-4 w-2/3 bg-gray-300'></div>
                     </div>
                   ) : null}
-                  <div className='text-sm text-gray-500'>
+                  <div className='text-sm text-gray-500 mt-5'>
                     View all 562 comments
                   </div>
 
@@ -526,6 +557,7 @@ const UploadPage = () => {
               </div>
             </div>
           </div>
+          <Toaster position="bottom-right"/>
         </div>
       )}
     </div>

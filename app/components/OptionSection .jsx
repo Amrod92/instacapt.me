@@ -3,7 +3,7 @@ import DropdownMenu from './dropdown-menu';
 
 // Custom component for OptionSection
 const OptionSection = ({ label, tooltipText, iconSVG, dropdownProps }) => (
-  <div className='mb-3 relative'>
+  <div className='mb-1 relative'>
     <label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
       {label}
     </label>

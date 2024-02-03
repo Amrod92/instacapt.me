@@ -21,12 +21,11 @@ const DropdownMenu = ({ captionSuiteValue, selectedStateValue }) => {
     {captionSuiteValue.map(value => (
       value.id === 0 ? (
         <option
-          key={value.id}
-          value={value.id}
-          disabled
-          selected
-          className='text-sm text-slate-400 hover:bg-gray-100 rounded-md m-5'
-        >
+        key={value.id}
+        value={value.id}
+        disabled={value.id === 0}
+        className={`text-sm ${value.id === 0 ? 'text-slate-400' : 'text-gray-700'} hover:bg-gray-100 rounded-md m-5`}
+      >
           {value.name}
         </option>
       ) : (
