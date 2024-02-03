@@ -51,7 +51,6 @@ const options = {
 };
 
 const UploadPage = () => {
-  //TODO: Implement how many captions are left, for instance 3 out of 5
   const [time, setTime] = useState('');
   const [retryAfter, setRetryAfter] = useState(null);
   const [remainingUpload, setRemainingUpload] = useState('');
@@ -77,6 +76,20 @@ const UploadPage = () => {
   const handleTimerFinish = () => {
     setTimeout(() => setRetryAfter(null), 0);
   };
+
+    // Function to check if any dropdown value has an id of 0
+    const isAnyDropdownValueZero = () => {
+      return [
+        sentimentValueSelected,
+        toneValueSelected,
+        captionValueSelected,
+        hashtagsValueSelected,
+        callToActionValueSelected,
+        categoryOrThemeValueSelected,
+        languageValueSelected,
+        targetAudianceValueSelected,
+      ].some(value => value.id === 0);
+    };
 
   const handleSubmitGenerateCaption = async e => {
     e.preventDefault();
@@ -310,8 +323,9 @@ const UploadPage = () => {
                 <button
                   type='button'
                   data-tooltip-id='my-tooltip-generate'
+                  disabled={isAnyDropdownValueZero()}
                   onClick={handleSubmitGenerateCaption}
-                  className='text-white bg-purple-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2'
+                  className={`text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 ${isAnyDropdownValueZero() ? 'bg-purple-500 opacity-50' : 'bg-purple-500'}`}
                 >
                   Generate Caption!
                 </button>

@@ -16,17 +16,29 @@ const DropdownMenu = ({ captionSuiteValue, selectedStateValue }) => {
       <select
         value={selected}
         onChange={handleChange}
-        className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 '
+        className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 '
       >
-        {captionSuiteValue.map(value => (
-          <option
-            key={value.id}
-            value={value.id}
-            className='text-sm text-gray-700 hover:bg-gray-100 rounded-md m-5'
-          >
-            {value.name}
-          </option>
-        ))}
+    {captionSuiteValue.map(value => (
+      value.id === 0 ? (
+        <option
+          key={value.id}
+          value={value.id}
+          disabled
+          selected
+          className='text-sm text-slate-400 hover:bg-gray-100 rounded-md m-5'
+        >
+          {value.name}
+        </option>
+      ) : (
+        <option
+          key={value.id}
+          value={value.id}
+          className='text-sm text-gray-700 hover:bg-gray-100 rounded-md m-5'
+        >
+          {value.name}
+        </option>
+      )
+    ))}
       </select>
     </div>
   );
