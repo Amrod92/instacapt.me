@@ -30,20 +30,17 @@ export async function POST(request) {
     const data = await request.json();
     console.log(data.prompt);
     const gpt_vision_response = await openai.chat.completions.create({
-      model: 'gpt-4-vision-preview',
-      max_tokens: 150,
+      model: "gpt-4o-mini",
       messages: [
         {
-          role: 'system',
-          content: data.prompt,
-        },
-        {
-          role: 'user',
+          role: "user",
           content: [
-            { type: 'text', text: data.prompt },
+            { type: "text", text: data.prompt },
             {
-              type: 'image_url',
-              image_url: data.image_url,
+              type: "image_url",
+              image_url: {
+                "url": data.image_url,
+              },
             },
           ],
         },
