@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import ReactTextTransition, { presets } from 'react-text-transition';
+import { motion } from "motion/react";
 import { texts } from '../utils/constants';
 import getRandomNumber from '../utils/getRandomNumber';
 
@@ -24,14 +24,14 @@ const HeroPage = () => {
       <h1 className='mx-auto max-w-4xl font-bold text-gray-800 text-center text-2xl sm:text-5xl md:text-6xl lg:text-7xl '>
         <div className='flex flex-col items-center justify-center'>
           <div className='text-center w-full'>
-            <ReactTextTransition
-              springConfig={presets.gentle}
-              className='inline-block'
-              inline // Ensure text transition is inline to maintain text alignment
-              style={{ maxWidth: '100%' }} // Ensure text doesn't overflow its container
-            >
-              {texts[textIndex]}
-            </ReactTextTransition>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+          >
+            {texts[textIndex]}
+          </motion.div>
           </div>
           <div className='text-center relative whitespace-nowrap text-purple-400'>
             <svg
