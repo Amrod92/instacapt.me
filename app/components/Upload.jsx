@@ -56,8 +56,8 @@ const UploadPage = () => {
   const [time, setTime] = useState('');
   const [retryAfter, setRetryAfter] = useState(null);
   const [remainingUpload, setRemainingUpload] = useState('');
-  // const [imageFile, setImageFile] = useState(''); 
-  const [imageFile, setImageFile] = useState( ['https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'] ); // example image
+  const [imageFile, setImageFile] = useState(''); 
+  // const [imageFile, setImageFile] = useState( ['https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'] ); // example image
   const [sentimentValueSelected, setSentimentValueSelected] = useState([]);
   const [toneValueSelected, setToneValueSelected] = useState([]);
   const [captionValueSelected, setCaptionValueSelected] = useState([]);
@@ -147,7 +147,6 @@ const UploadPage = () => {
       notifySuccessCaptionCreation();
     } catch (error) {
       notifyFailedCaptionCreation();
-      console.error('There was a problem with the fetch:', error);
     }
   };
 
