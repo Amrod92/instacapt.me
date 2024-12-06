@@ -28,8 +28,7 @@ export async function POST(request) {
   }
   try {
     const data = await request.json();
-    console.log(data.prompt);
-    const gpt_vision_response = await openai.chat.completions.create({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
@@ -39,7 +38,7 @@ export async function POST(request) {
             {
               type: "image_url",
               image_url: {
-                "url": data.image_url,
+                url: data.image_url,
               },
             },
           ],
@@ -48,21 +47,39 @@ export async function POST(request) {
     });
 
     return new Response(
-      JSON.stringify(gpt_vision_response.choices[0].message),
+      JSON.stringify(completion.choices[0].message),
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          ['remaning-limit']: `${remaining}`,
+          ['remaining-limit']: `${remaining}`,
         },
       }
     );
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'An error occurred' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    // Handle insufficient quota specifically
+    if (error.status === 429 && error.error?.type === 'insufficient_quota') {
+      return new Response(
+        JSON.stringify({ error: 'Quota exceeded. Please check your plan and billing details.' }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
+
+    // General error response
+    return new Response(
+      JSON.stringify({ error: 'An error occurred' }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
   }
 }
+

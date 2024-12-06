@@ -2,6 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { convertSecondstoTime } from '../utils/converter-limiter';
+import { AlertCircle } from "lucide-react"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 
 const CountdownTimer = ({ endTimeInSeconds, onTimerFinish }) => {
   const [remainingSeconds, setRemainingSeconds] = useState(endTimeInSeconds);
@@ -32,12 +39,13 @@ const CountdownTimer = ({ endTimeInSeconds, onTimerFinish }) => {
   }, [remainingSeconds, onTimerFinish]);
 
   return (
-    <div className='mb-5'>
-      <span className='text-red-500'>
-        🚫 We've run out of words! Please retry in:{' '}
-        {convertSecondstoTime(remainingSeconds)}
-      </span>
-    </div>
+      <Alert variant="destructive" className="relative w-auto my-5">
+        <AlertCircle/>
+        <AlertTitle className="ml-2">That's all for today!</AlertTitle>
+        <AlertDescription className="ml-2">
+          We've run out of words! Please retry in: {convertSecondstoTime(remainingSeconds)}
+        </AlertDescription>
+      </Alert>
   );
 };
 

@@ -1,44 +1,42 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DropdownMenu = ({ captionSuiteValue, selectedStateValue }) => {
-  const [selected, setSelected] = useState(captionSuiteValue[0].id);
+  const [selected, setSelected] = useState(captionSuiteValue[0]?.id?.toString() || "");
 
   useEffect(() => {
-    selectedStateValue(captionSuiteValue.find(value => value.id === selected));
+    const selectedValue = captionSuiteValue.find(value => value.id.toString() === selected);
+    selectedStateValue(selectedValue);
   }, [selected, selectedStateValue, captionSuiteValue]);
 
-  const handleChange = event => {
-    setSelected(parseInt(event.target.value));
+  const handleChange = value => {
+    setSelected(value); // value will already be a string
   };
 
   return (
-    <div className='relative inline-block text-left w-72 ml-2.5'>
-      <select
-        value={selected}
-        onChange={handleChange}
-        className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 '
-      >
-    {captionSuiteValue.map(value => (
-      value.id === 0 ? (
-        <option
-        key={value.id}
-        value={value.id}
-        disabled={value.id === 0}
-        className={`text-sm ${value.id === 0 ? 'text-slate-400' : 'text-gray-700'} hover:bg-gray-100 rounded-md m-5`}
-      >
-          {value.name}
-        </option>
-      ) : (
-        <option
-          key={value.id}
-          value={value.id}
-          className='text-sm text-gray-700 hover:bg-gray-100 rounded-md m-5'
-        >
-          {value.name}
-        </option>
-      )
-    ))}
-      </select>
+    <div className="relative inline-block text-left w-72 ml-2.5">
+      <Select onValueChange={handleChange} value={selected}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select an option" />
+        </SelectTrigger>
+        <SelectContent>
+          {captionSuiteValue.map(value => (
+            <SelectItem
+              key={value.id}
+              value={value.id.toString()} // Ensure IDs are strings for consistency
+              disabled={value.id === 0} // Optionally disable specific options
+            >
+              {value.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };
