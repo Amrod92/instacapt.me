@@ -362,7 +362,7 @@ const UploadPage = () => {
                 </div>
 
                   <div className='flex-grow ml-3 text-sm font-semibold'>
-                    <a href='https://www.instagram.com/manlio_kt/' target='_blank'>
+                    <a href='https://www.instagram.com/manlio_kt/' target='_blank' rel="noopener noreferrer">
                         <span className='text-sm font-semibold'>InstaCapt.Me</span>
                     </a>
                     <span className='text-gray-400'>• {time}</span>
@@ -468,7 +468,7 @@ const UploadPage = () => {
 
                   <div className='text-sm'>
                     Liked by{' '}
-                    <a href='https://www.instagram.com/zuck/' target='_blank'>
+                    <a href='https://www.instagram.com/zuck/' target='_blank' rel="noopener noreferrer">
                       <span className='text-sm font-semibold'>zuck</span>
                     </a>{' '}
                     and <span className='text-sm font-semibold'>others</span>
