@@ -33,6 +33,7 @@ import { BadgeInfo, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { formatDistanceToNow } from 'date-fns';
+import VerifiedIcon from './VerifiedIcon';
 
 // Get production API keys from Upload.io
 const uploader = Uploader({
@@ -401,8 +402,8 @@ const UploadPage = () => {
                   </div>
                 )}
 
-                <div className='p-4'>
-                  <div className='flex justify-between gap-3'>
+                <div className='p-3'>
+                  <div className='flex justify-between gap-3 my-1'>
                     {/* Group for the first three SVGs */}
                     <div className='flex gap-3'>
                       <svg
@@ -466,7 +467,7 @@ const UploadPage = () => {
                     </svg>
                   </div>
 
-                  <div className='text-sm'>
+                  <div className='text-sm mt-2'>
                     Liked by{' '}
                     <a href='https://www.instagram.com/zuck/' target='_blank' rel="noopener noreferrer">
                       <span className='text-sm font-semibold'>zuck</span>
@@ -483,34 +484,45 @@ const UploadPage = () => {
                   {(responseData.content && !loadingData && retryAfter) ||
                   (responseData.content && !loadingData && !retryAfter) ? (
                     <>
-                      <div className='text-sm mt-5'>
-                        <span className='font-semibold'>InstaCapt.me</span>{' '}
-                        {responseData.content}{' '}
+                      <div className="flex justify-between items-center">
+                        {/* Left Content */}
+                        <div className="flex items-center">
+                          <div className="text-sm font-semibold flex items-center">
+                            InstaCapt.me <VerifiedIcon/>
+                          </div>
+                          <div className="text-sm">
+                            {responseData.content}
+                          </div>
+                        </div>
+
+
+                        {/* Right Button */}
+                        <div className="mt-1.5">
+                          <button
+                            onClick={() => {
+                              copyToClipboard();
+                              notifyClipboard();
+                            }}
+                            className="flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200"
+                          >
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="icon-md"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M12 4C10.8954 4 10 4.89543 10 6H14C14 4.89543 13.1046 4 12 4ZM8.53513 4C9.22675 2.8044 10.5194 2 12 2C13.4806 2 14.7733 2.8044 15.4649 4H17C18.6569 4 20 5.34315 20 7V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V7C4 5.34315 5.34315 4 7 4H8.53513ZM8 6H7C6.44772 6 6 6.44772 6 7V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V7C18 6.44772 17.5523 6 17 6H16C16 7.10457 15.1046 8 14 8H10C8.89543 8 8 7.10457 8 6Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </button>
+                        </div>
                       </div>
-                      <button
-                          onClick={() => {
-                            copyToClipboard();
-                            notifyClipboard();
-                          }}
-                        className='flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200'
-                      >
-                        <svg
-                          width='24'
-                          height='24'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='icon-md'
-                        >
-                          <path
-                            fillRule='evenodd'
-                            clipRule='evenodd'
-                            d='M12 4C10.8954 4 10 4.89543 10 6H14C14 4.89543 13.1046 4 12 4ZM8.53513 4C9.22675 2.8044 10.5194 2 12 2C13.4806 2 14.7733 2.8044 15.4649 4H17C18.6569 4 20 5.34315 20 7V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V7C4 5.34315 5.34315 4 7 4H8.53513ZM8 6H7C6.44772 6 6 6.44772 6 7V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V7C18 6.44772 17.5523 6 17 6H16C16 7.10457 15.1046 8 14 8H10C8.89543 8 8 7.10457 8 6Z'
-                            fill='currentColor'
-                          ></path>
-                        </svg>
-                      </button>
-                      
                     </>
                   ) : loadingData && !retryAfter ? (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
