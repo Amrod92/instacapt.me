@@ -30,6 +30,7 @@ export async function POST(request) {
     const data = await request.json();
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
+      n: 3, // Request 3 results
       messages: [
         {
           role: "user",
@@ -46,8 +47,11 @@ export async function POST(request) {
       ],
     });
 
+    // Return all 3 completions
+    const results = completion.choices.map(choice => choice.message);
+
     return new Response(
-      JSON.stringify(completion.choices[0].message),
+      JSON.stringify(results),
       {
         status: 200,
         headers: {
@@ -82,4 +86,3 @@ export async function POST(request) {
     );
   }
 }
-

@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { formatDistanceToNow } from 'date-fns';
 import VerifiedIcon from './VerifiedIcon';
+import { CarouselContainer } from './UI/CarouselContainer';
 
 // Get production API keys from Upload.io
 const uploader = Uploader({
@@ -57,8 +58,8 @@ const UploadPage = () => {
   const [time, setTime] = useState('');
   const [retryAfter, setRetryAfter] = useState(null);
   const [remainingUpload, setRemainingUpload] = useState('');
-  const [imageFile, setImageFile] = useState(''); 
-  // const [imageFile, setImageFile] = useState( ['https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'] ); // example image
+  // const [imageFile, setImageFile] = useState(''); 
+  const [imageFile, setImageFile] = useState( ['https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'] ); // example image
   const [sentimentValueSelected, setSentimentValueSelected] = useState([]);
   const [toneValueSelected, setToneValueSelected] = useState([]);
   const [captionValueSelected, setCaptionValueSelected] = useState([]);
@@ -142,6 +143,7 @@ const UploadPage = () => {
 
       // Get the JSON response body
       const result = await response.json();
+      console.log('responseData: ', responseData);
 
       setLoadingData(false);
       setResposeData(result);
@@ -316,7 +318,7 @@ const UploadPage = () => {
               }}
             />
 
-            {responseData.content && !retryAfter && (
+            {responseData.length > 0 && !retryAfter && (
               <Alert className="relative w-80 my-5">
                 <BadgeInfo  />
                 <AlertTitle className="ml-2">Caption Remaining</AlertTitle>
@@ -475,14 +477,14 @@ const UploadPage = () => {
                     and <span className='text-sm font-semibold'>others</span>
                   </div>
 
-                  {loadingData && !responseData.content && !retryAfter && (
+                  {loadingData && !responseData.length > 0 && !retryAfter && (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
                       <div className='mb-2 h-6 bg-gray-300'></div>
                       <div className='h-4 w-2/3 bg-gray-300'></div>
                     </div>
                   )}
-                  {(responseData.content && !loadingData && retryAfter) ||
-                  (responseData.content && !loadingData && !retryAfter) ? (
+                  {(responseData.length > 0 && !loadingData && retryAfter) ||
+                  (responseData.length > 0  && !loadingData && !retryAfter) ? (
                     <>
                       <div className="flex justify-between items-center">
                         {/* Left Content */}
@@ -490,9 +492,7 @@ const UploadPage = () => {
                           <div className="text-sm font-semibold flex items-center">
                             InstaCapt.me <VerifiedIcon/>
                           </div>
-                          <div className="text-sm">
-                            {responseData.content}
-                          </div>
+                          <CarouselContainer genCompationData={responseData}/>
                         </div>
 
 
