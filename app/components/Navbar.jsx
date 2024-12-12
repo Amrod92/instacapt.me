@@ -14,10 +14,10 @@ export default function Component() {
                 <span className="text-xl font-semibold text-purple-500">InstaCapt.me</span>
             </Link>
             <div className="hidden md:flex gap-4">
-                <Link href="#" className="text-lg font-medium hover:underline underline-offset-4" prefetch={false}>
+                <Link href="/" className="text-lg font-medium hover:underline underline-offset-4" prefetch={false}>
                     Home
                 </Link>
-                <Link href="#" className="text-lg font-medium hover:underline underline-offset-4" prefetch={false}>
+                <Link href="/faq" className="text-lg font-medium hover:underline underline-offset-4" prefetch={false}>
                     FAQ
                 </Link>
             </div>
