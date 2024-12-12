@@ -4,13 +4,31 @@ const nextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
-    domains: [
-      'static.wikia.nocookie.net',
-      'i.ibb.co',
-      'images.unsplash.com',
-      'upcdn.io',
-    ],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'static.wikia.nocookie.net',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upcdn.io',
+        port: '',
+        pathname: '/**',
+      },
       {
         protocol: 'https',
         hostname: 'assets.vercel.com',
