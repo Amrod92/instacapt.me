@@ -28,24 +28,25 @@ export async function POST(request) {
   }
   try {
     const data = await request.json();
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      n: 3, // Request 3 results
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: data.prompt },
-            {
-              type: "image_url",
-              image_url: {
-                url: data.image_url,
-              },
-            },
-          ],
-        },
-      ],
-    });
+    console.log(data);
+    // const completion = await openai.chat.completions.create({
+    //   model: "gpt-4o-mini",
+    //   n: 3, // Request 3 results
+    //   messages: [
+    //     {
+    //       role: "user",
+    //       content: [
+    //         { type: "text", text: data.prompt },
+    //         {
+    //           type: "image_url",
+    //           image_url: {
+    //             url: data.image_url,
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // });
 
     // Return all 3 completions
     const results = completion.choices.map((choice) => choice.message);
