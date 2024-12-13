@@ -177,8 +177,10 @@ const UploadPage = () => {
               {/* Right Section: Image Preview */}
               <ImagePreviewSection
                   imageFile={imageFile}
+                  loadingData={loadingData}
                   responseData={responseData}
                   time={time}
+                  retryAfter={retryAfter}
               />
             </div>
         )}
