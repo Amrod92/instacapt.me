@@ -20,7 +20,7 @@ const HeroPage = () => {
   }, [textIndex]);
 
   return (
-    <div className='flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-15 sm:mt-15'>
+    <div className='flex flex-1 w-full flex-col items-center justify-center text-center px-4 mt-16 sm:mt-16'>
       <h1 className='mx-auto max-w-4xl font-bold text-gray-800 text-center text-2xl sm:text-5xl md:text-6xl lg:text-7xl '>
         <div className='flex flex-col items-center justify-center'>
           <div className='text-center w-full'>
@@ -35,7 +35,6 @@ const HeroPage = () => {
           </div>
           <div className='text-center relative whitespace-nowrap text-purple-400'>
             <svg
-              aria-hidden='true'
               viewBox='0 0 418 42'
               className='absolute top-2/3 left-1/2 transform -translate-x-1/2 h-[0.58em] w-full fill-purple-300/70'
               preserveAspectRatio='none'
