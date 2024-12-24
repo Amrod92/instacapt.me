@@ -181,7 +181,7 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                             <CarouselContent>
                                 {responseData.map((item, index) => (
                                     <CarouselItem key={index}>
-                                        <span>{item.message?.content}</span>
+                                        <span className="">{item.message?.content}</span>
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
