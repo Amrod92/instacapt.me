@@ -1,12 +1,32 @@
-import React from "react";
-import { CarouselContainer } from "./CarouselContainer";
+import React, {useState, useEffect} from "react";
+import {
+    Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
+} from "@/components/ui/carousel"
 import instacapt_logo from '../../../public/instacapt_logo.png';
 import VerifiedIcon from '../VerifiedIcon';
 import Image from "next/image";
 
-const ImagePreviewSection = ({ imageFile, loadingData, responseData, time, retryAfter }) => {
-    return (
-        <div className="mx-auto flex justify-center max-w-3xl mt-4 bg-white items-center relative border-y border-b-gray-300">
+const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryAfter}) => {
+    console.log('this is responseData', responseData);
+    const [api, setApi] = useState();
+    const [current, setCurrent] = React.useState(0);
+    const [count, setCount] = React.useState(0);
+
+    useEffect(() => {
+        if (!api) {
+            return
+        }
+
+        setCount(api.scrollSnapList().length)
+        setCurrent(api.selectedScrollSnap() + 1)
+
+        api.on("select", () => {
+            setCurrent(api.selectedScrollSnap() + 1)
+        })
+    }, [api]);
+
+    return (<div
+            className="mx-auto w-full lg:w-1/2 p-2 flex justify-center max-w-3xl mt-4 bg-white items-center relative border-y border-b-gray-300">
             {/* Header Section */}
             <div className="h-full relative w-full ">
                 <div>
@@ -148,64 +168,60 @@ const ImagePreviewSection = ({ imageFile, loadingData, responseData, time, retry
                     </div>
                 </div>
 
-                {loadingData && !responseData.content && !retryAfter && (
+                {loadingData && !responseData[0]?.message.content && !retryAfter && (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
                         <div className='mb-2 h-6 bg-gray-300'></div>
                         <div className='h-4 w-2/3 bg-gray-300'></div>
-                    </div>
-                )}
-                {(!responseData.content && !loadingData && retryAfter) ||
-                (!responseData.content && !loadingData && !retryAfter) ? (
-                    <>
-                        <div className="flex justify-between items-center mt-2">
-                            {/* Left Content */}
-                            <div className="flex items-center">
-                                <div className="text-sm font-semibold flex items-center">
-                                    <a href='https://www.instagram.com/manlio_kt/' target='_blank'
-                                       rel="noopener noreferrer">
-                                        <span className='text-sm font-semibold'>InstaCapt.Me</span>
-                                    </a> <VerifiedIcon/>
-                                </div>
-                                <div className="text-sm">
-                                    {responseData.content}
-                                </div>
-                            </div>
+                    </div>)}
+                {(responseData[0]?.message.content && !loadingData && retryAfter) || (responseData[0]?.message.content && !loadingData && !retryAfter) ? (<>
+                    <div>
+                        {/* Left Content */}
+                        <Carousel setApi={setApi}>
+                            <CarouselContent>
+                                {responseData.map((item, index) => (
+                                    <CarouselItem key={index}>
+                                        <div className="flex justify-between items-center">
+                                            <span
+                                                className="font-semibold">InstaCapt.me </span> <VerifiedIcon/>
+                                                {item.message?.content || "No content available."}
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                        </Carousel>
 
-
-                            {/* Right Button */}
-                            <div className="mt-1.5">
-                                <button
-                                    onClick={() => {
-                                        copyToClipboard();
-                                        notifyClipboard();
-                                    }}
-                                    className="flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200"
+                        {/* Right Button */}
+                        <div className="mt-1.5">
+                            <button
+                                onClick={() => {
+                                    copyToClipboard();
+                                    notifyClipboard();
+                                }}
+                                className="flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200"
+                            >
+                                <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="icon-md"
                                 >
-                                    <svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="icon-md"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            clipRule="evenodd"
-                                            d="M12 4C10.8954 4 10 4.89543 10 6H14C14 4.89543 13.1046 4 12 4ZM8.53513 4C9.22675 2.8044 10.5194 2 12 2C13.4806 2 14.7733 2.8044 15.4649 4H17C18.6569 4 20 5.34315 20 7V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V7C4 5.34315 5.34315 4 7 4H8.53513ZM8 6H7C6.44772 6 6 6.44772 6 7V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V7C18 6.44772 17.5523 6 17 6H16C16 7.10457 15.1046 8 14 8H10C8.89543 8 8 7.10457 8 6Z"
-                                            fill="currentColor"
-                                        ></path>
-                                    </svg>
-                                </button>
-                            </div>
+                                    <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M12 4C10.8954 4 10 4.89543 10 6H14C14 4.89543 13.1046 4 12 4ZM8.53513 4C9.22675 2.8044 10.5194 2 12 2C13.4806 2 14.7733 2.8044 15.4649 4H17C18.6569 4 20 5.34315 20 7V19C20 20.6569 18.6569 22 17 22H7C5.34315 22 4 20.6569 4 19V7C4 5.34315 5.34315 4 7 4H8.53513ZM8 6H7C6.44772 6 6 6.44772 6 7V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V7C18 6.44772 17.5523 6 17 6H16C16 7.10457 15.1046 8 14 8H10C8.89543 8 8 7.10457 8 6Z"
+                                        fill="currentColor"
+                                    ></path>
+                                </svg>
+                            </button>
                         </div>
-                    </>
-                ) : loadingData && !retryAfter ? (
+                    </div>
+                </>) : loadingData && !retryAfter ? (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
                         <div className='mb-2 h-6 bg-gray-300'></div>
                         <div className='h-4 w-2/3 bg-gray-300'></div>
-                    </div>
-                ) : null}
+                    </div>) : null}
 
                 <div className='text-sm text-gray-500 mt-2'>
                     View all 1,557 comments
@@ -235,8 +251,7 @@ const ImagePreviewSection = ({ imageFile, loadingData, responseData, time, retry
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        </div>);
 };
 
 export default ImagePreviewSection;

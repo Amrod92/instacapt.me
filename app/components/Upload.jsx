@@ -124,6 +124,7 @@ const UploadPage = () => {
       setRemainingUpload(parseInt(responseRemaining));
 
       const results = await response.json();
+      console.log('LOG: ', results);
       setResposeData(results);
       toast.success("Captions generated successfully!");
     } catch (error) {

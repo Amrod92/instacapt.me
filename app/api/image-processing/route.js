@@ -1,20 +1,9 @@
-import { OpenAI } from "openai";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(100, "86400 s"),
-  analytics: true,
-});
-
 export async function POST(request) {
+  // Simulate rate limit check
   const ip_address = request.headers.get("x-forwarded-for") ?? "";
-  const { success, reset, remaining } = await ratelimit.limit(ip_address);
+  const success = true; // Simulating success
+  const remaining = 50; // Example: 50 requests remaining
+  const reset = Date.now() + 86400 * 1000; // Reset in 24 hours
 
   if (!success) {
     const now = Date.now();
@@ -26,32 +15,37 @@ export async function POST(request) {
       },
     });
   }
+
   try {
     const data = await request.json();
-    console.log(data);
-    // const completion = await openai.chat.completions.create({
-    //   model: "gpt-4o-mini",
-    //   n: 3, // Request 3 results
-    //   messages: [
-    //     {
-    //       role: "user",
-    //       content: [
-    //         { type: "text", text: data.prompt },
-    //         {
-    //           type: "image_url",
-    //           image_url: {
-    //             url: data.image_url,
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // });
+    console.log("Received prompt:", data);
 
-    // Return all 3 completions
-    const results = completion.choices.map((choice) => choice.message);
+    // Simulate a dummy response from OpenAI
+    const dummyCompletion = {
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: `Generated caption for: ${data.prompt} - Example caption 1`,
+          },
+        },
+        {
+          message: {
+            role: "assistant",
+            content: `Generated caption for: ${data.prompt} - Example caption 2`,
+          },
+        },
+        {
+          message: {
+            role: "assistant",
+            content: `Generated caption for: ${data.prompt} - Example caption 3`,
+          },
+        },
+      ],
+    };
 
-    return new Response(JSON.stringify(results), {
+    // Simulate remaining request count in headers
+    return new Response(JSON.stringify(dummyCompletion.choices), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -59,22 +53,7 @@ export async function POST(request) {
       },
     });
   } catch (error) {
-    // Handle insufficient quota specifically
-    if (error.status === 429 && error.error?.type === "insufficient_quota") {
-      return new Response(
-        JSON.stringify({
-          error: "Quota exceeded. Please check your plan and billing details.",
-        }),
-        {
-          status: 429,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    }
-
-    // General error response
+    console.error("Error handling request:", error);
     return new Response(JSON.stringify({ error: "An error occurred" }), {
       status: 500,
       headers: {
