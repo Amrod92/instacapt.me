@@ -11,7 +11,7 @@ import ImagePreviewSection from "./UI/ImagePreviewSection";
 
 // Get production API keys from Upload.io
 const uploader = Uploader({
-  apiKey: "free",
+  "apiKey": "free"
 });
 
 const options = {
@@ -26,8 +26,8 @@ const UploadPage = () => {
   const [time, setTime] = useState("");
   const [retryAfter, setRetryAfter] = useState(null);
   const [remainingUpload, setRemainingUpload] = useState(null);
-  // const [imageFile, setImageFile] = useState([]);
-  const [imageFile, setImageFile] = useState( ['https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'] ); // example image
+  const [imageFile, setImageFile] = useState([]);
+  // const [imageFile, setImageFile] = useState( ['https://static.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603'] ); // example image
   const [responseData, setResposeData] = useState([]);
   const [loadingData, setLoadingData] = useState(false);
 
@@ -165,20 +165,23 @@ const UploadPage = () => {
   return (
       <div className="mt-5 sm:mt-20">
         {imageFile.length === 0 ? (
-            <div className="flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl">
-              <UploadDropzone
-                  uploader={uploader}
-                  options={options}
-                  width="600px"
-                  height="375px"
-                  onUpdate={(files) => {
-                    if (files.length > 0) {
-                      setImageFile(files.map((file) => file.fileUrl));
-                    }
-                  }}
-              />
+            <div className="justify-items-center">
+              <div className="flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl">
+                <UploadDropzone
+                    uploader={uploader}
+                    options={options}
+                    width="600px"
+                    height="375px"
+                    onUpdate={(files) => {
+                      if (files.length > 0) {
+                        setImageFile(files.map((file) => file.fileUrl));
+                      }
+                    }}
+                />
+              </div>
               <span className="text-sm text-slate-400">Image size limit is 5MB</span>
             </div>
+
         ) : (
             <div className="flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl">
               {/* Left Section: Caption Crafting Suite */}

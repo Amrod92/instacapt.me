@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 const ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(50, "86400 s"), // Limit to 5 requests per day
+    limiter: Ratelimit.slidingWindow(5, "86400 s"), // Limit to 5 requests per day
     analytics: true,
 });
 
