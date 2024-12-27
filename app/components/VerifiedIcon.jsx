@@ -1,8 +1,7 @@
 import React from "react";
 
-const VerifiedIcon = () => {
+const VerifiedIcon = ({ className }) => {
   return (
-    <div className="mx-1">
       <svg
         aria-label="Verified"
         fill="rgb(0, 149, 246)"
@@ -10,6 +9,7 @@ const VerifiedIcon = () => {
         role="img"
         viewBox="0 0 40 40"
         width="12"
+        className={className}
       >
         <title>Verified</title>
         <path
@@ -17,7 +17,6 @@ const VerifiedIcon = () => {
           fillRule="evenodd"
         ></path>
       </svg>
-    </div>
   );
 };
 

@@ -3,7 +3,7 @@ As an adept social media influencer and content creator, your goal is to craft a
   includeHashtags
     ? 'Generate at least six inventive hashtags that encapsulate the core message of the post and include them at the end of the caption.'
     : 'No generate hashtags for this caption!'
-} If \${call_to_action} is affirmative, ensure to include a motivational call to action. Your caption must be pertinent to the \${category_or_theme} theme, appeal to a \${target_audience} demographic, and be penned in \${language_preference}, all while maintaining a \${tone} tone.
+} \${call_to_action} Your caption must be pertinent to the \${category_or_theme} theme, appeal to a \${target_audience} demographic, and be penned in \${language_preference}, all while maintaining a \${tone} tone.
 
 ${
   includeHashtags
