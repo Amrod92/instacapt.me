@@ -1,64 +1,90 @@
+import { OpenAI } from "openai";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+const ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(50, "86400 s"), // Limit to 5 requests per day
+    analytics: true,
+});
+
 export async function POST(request) {
-  // Simulate rate limit check
-  const ip_address = request.headers.get("x-forwarded-for") ?? "";
-  const success = true; // Simulating success
-  const remaining = 50; // Example: 50 requests remaining
-  const reset = Date.now() + 86400 * 1000; // Reset in 24 hours
+    const ip_address = request.headers.get("x-forwarded-for") ?? "";
 
-  if (!success) {
-    const now = Date.now();
-    const retryAfter = Math.floor((reset - now) / 1000);
-    return new Response("Too Many Requests", {
-      status: 429,
-      headers: {
-        ["retry-after"]: `${retryAfter}`,
-      },
-    });
-  }
+    const {success, remaining, reset} = await ratelimit.limit(ip_address);
 
-  try {
-    const data = await request.json();
-    console.log("Received prompt:", data);
+    if (!success) {
+        const now = Date.now();
+        const retryAfter = Math.floor((reset - now) / 1000);
+        return new Response("Too Many Requests", {
+            status: 429,
+            headers: {
+                ["retry-after"]: `${retryAfter}`,
+            },
+        });
+    }
 
-    // Simulate a dummy response from OpenAI
-    const dummyCompletion = {
-      choices: [
-        {
-          message: {
-            role: "assistant",
-            content: `Generated caption for: ${data.prompt} - Example caption 1`,
+    try {
+        const data = await request.json();
+        const prompt = data.prompt;
+        const user_image = data.image_url
+        const nVariants = data.generate_variants || 1; // Default to 1 variants if not specified
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {type: "text", text: prompt},
+              {
+                type: "image_url",
+                image_url: {
+                  url: user_image,
+                },
+              },
+            ],
           },
-        },
-        {
-          message: {
-            role: "assistant",
-            content: `Generated caption for: ${data.prompt} - Example caption 2`,
-          },
-        },
-        {
-          message: {
-            role: "assistant",
-            content: `Generated caption for: ${data.prompt} - Example caption 3`,
-          },
-        },
-      ],
-    };
+        ],
+        n: nVariants, // Number of variants to generate
+      });
 
-    // Simulate remaining request count in headers
-    return new Response(JSON.stringify(dummyCompletion.choices), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ["remaining-limit"]: `${remaining}`,
-      },
-    });
-  } catch (error) {
-    console.error("Error handling request:", error);
-    return new Response(JSON.stringify({ error: "An error occurred" }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
+        const results = completion.choices.map((choice) => choice.message);
+
+        return new Response(JSON.stringify(results), {
+            status: 200,
+            headers: {
+                "Content-Type": "application/json",
+                ["remaining-limit"]: `${remaining}`,
+            },
+        });
+    } catch (error) {
+        console.error("Error calling OpenAI API:", error);
+
+        // Handle OpenAI-specific errors
+        if (error.status === 429 && error.error?.type === "insufficient_quota") {
+            return new Response(
+                JSON.stringify({
+                    error: "Quota exceeded. Please check your plan and billing details.",
+                }),
+                {
+                    status: 429,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        }
+
+        return new Response(JSON.stringify({error: "An error occurred"}), {
+            status: 500,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    }
 }

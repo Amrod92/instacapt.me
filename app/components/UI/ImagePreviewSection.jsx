@@ -8,7 +8,6 @@ import VerifiedIcon from '../VerifiedIcon';
 import Image from "next/image";
 
 const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryAfter}) => {
-    console.log('this is responseData', responseData);
     const [api, setApi] = useState();
     const [current, setCurrent] = React.useState(0);
     const [count, setCount] = React.useState(0);
@@ -27,7 +26,7 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
     }, [api]);
 
     const copyToClipboard = () => {
-        const activeCaption = responseData[current - 1]?.message?.content || "No content available.";
+        const activeCaption = responseData[current - 1]?.content || "No content available.";
         navigator.clipboard
             .writeText(activeCaption)
             .then(() => {
@@ -187,12 +186,12 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                     </div>
                 </div>
 
-                {loadingData && !responseData[0]?.message.content && !retryAfter && (
+                {loadingData && !responseData[0]?.content && !retryAfter && (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
                         <div className='mb-2 h-6 bg-gray-300'></div>
                         <div className='h-4 w-2/3 bg-gray-300'></div>
                     </div>)}
-                {(responseData[0]?.message.content && !loadingData && retryAfter) || (responseData[0]?.message.content && !loadingData && !retryAfter) ? (
+                {(responseData[0]?.content && !loadingData && retryAfter) || (responseData[0]?.content && !loadingData && !retryAfter) ? (
                     <>
                         {/* Like Section */}
                         <div className="text-sm flex flex-col space-y-3">
@@ -214,7 +213,7 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                                             <div>
                                                 <span className="font-bold inline-flex items-center">InstaCapt.me <VerifiedIcon
                                                     className="mx-1"/></span>
-                                                <span>{item.message?.content}</span>
+                                                <span>{item?.content}</span>
                                             </div>
                                         </CarouselItem>
                                     ))}

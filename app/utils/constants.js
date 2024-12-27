@@ -7,6 +7,14 @@ export const texts = [
 /* 
  Constants used for Caption Crafting Suite section 
 */
+
+export const generate_variants = [
+  {id: 0, name: 'Generate Variants', generate: 0},
+  {id: 1, name: '1 Variant', generate: 1 },
+  {id: 2, name: '3 Variants', generate: 3 },
+  {id: 3, name: '5 Variants', generate: 5 },
+];
+
 export const sentiment = [
   { id: 0, name: 'Sentiment' },
   { id: 1, name: 'Positive' },

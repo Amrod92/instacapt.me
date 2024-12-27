@@ -4,6 +4,7 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
 import CountdownTimer from "../CountdownTimer";
 import OptionSection from "../OptionSection ";
 import {
+
     SentimentIcon,
     ToneIcon,
     CaptionLengthIcon,
@@ -12,8 +13,10 @@ import {
     CategoryThemeIcon,
     LanguageIcon,
     TargetAudienceIcon,
+    GenerateIcon,
 } from "../../utils/caption-suite-options";
 import {
+    generate_variants,
     sentiment,
     tone,
     caption_length,
@@ -36,8 +39,9 @@ import {
 
 const CaptionCraftingSuite = ({
                                   retryAfter,
+                                  onComplete,
+                                  handleRetryComplete,
                                   remainingUpload,
-                                  setRemainingUpload,
                                   loadingData,
                                   handleSubmitGenerateCaption,
                                   isAnyDropdownValueZero,
@@ -49,6 +53,7 @@ const CaptionCraftingSuite = ({
                                   categoryOrThemeState,
                                   languagePreferenceState,
                                   targetAudienceState,
+                                  generateValueState,
                               }) => {
     return (
         <div className="w-full lg:w-1/2 p-2 justify-items-center">
@@ -56,13 +61,23 @@ const CaptionCraftingSuite = ({
 
             {retryAfter && (
                 <CountdownTimer
-                    endTimeInSeconds={retryAfter}
-                    onTimerFinish={() => setRemainingUpload(null)}
+                    retryAfterInSeconds={retryAfter}
+                    onComplete={onComplete}
                 />
             )}
 
             {/* Options Section for larger screens */}
             <div className="justify-items-center hidden lg:block">
+                <OptionSection
+                    label="Generate"
+                    tooltipText="How many variants do you want to be generated?"
+                    iconSVG={<GenerateIcon/>}
+                    dropdownProps={{
+                        captionSuiteValue: generate_variants,
+                        selectedStateValue: generateValueState.setValue,
+                    }}
+                />
+
                 <OptionSection
                     label="Sentiment"
                     tooltipText="Match the sentiment to the image."
@@ -182,6 +197,16 @@ const CaptionCraftingSuite = ({
                                 </DrawerDescription>
                             </DrawerHeader>
                             <div className="grid items-center justify-center">
+                                <OptionSection
+                                    label="Generate"
+                                    tooltipText="How many variants do you want to be generated."
+                                    iconSVG={<GenerateIcon/>}
+                                    dropdownProps={{
+                                        captionSuiteValue: generate_variants,
+                                        selectedStateValue: generateValueState.setValue,
+                                    }}
+                                />
+
                                 <OptionSection
                                     label="Sentiment"
                                     tooltipText="Match the sentiment to the image."

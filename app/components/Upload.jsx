@@ -39,6 +39,7 @@ const UploadPage = () => {
   const [categoryOrThemeValueSelected, setCategoryOrThemeValueSelected] = useState(null);
   const [languagePreferenceValueSelected, setLanguagePreferenceValueSelected] = useState(null);
   const [targetAudienceValueSelected, setTargetAudienceValueSelected] = useState(null);
+  const [generateVariantSelected, setGenerateVariantSelected] = useState(null);
 
 // Define isAnyDropdownValueZero
   const isAnyDropdownValueZero = () => {
@@ -51,10 +52,14 @@ const UploadPage = () => {
       categoryOrThemeValueSelected,
       languagePreferenceValueSelected,
       targetAudienceValueSelected,
+      generateVariantSelected
     ].some(value => value?.id === 0);
   };
 
-
+  const handleRetryComplete = () => {
+    setRetryAfter(null);
+    toast.success("Retry time is up! You can try again now.");
+  };
 
   const updateTime = () => {
     if (imageFile.length) {
@@ -100,39 +105,61 @@ const UploadPage = () => {
         .replace("${language_preference}", data.languagePreference)
         .replace("${tone}", data.tone);
 
-    console.log("Generated Prompt:", prompt);
+    const sendData = {
+      prompt: prompt,
+      image_url: imageFile[0],
+      generate_variants: generateVariantSelected.generate
+    };
+
     try {
-      setLoadingData(true);
-      const response = await fetch("/api/image-processing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(prompt),
-      });
+        setLoadingData(true);
+        const response = await fetch("/api/image-processing", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(sendData),
+        });
 
-      if (response.status === 429) {
-        const retryAfter = response.headers.get("retry-after");
-        setRetryAfter(convertSecondstoTime(retryAfter));
-        setRemainingUpload(0);
-        setLoadingData(false);
-        notifyRateLimiter();
-        toast.error("You've reached the rate limit. Try again later.");
-      }
+        if (response.status === 429) {
+          const retryAfterHeader = response.headers.get("retry-after");
+          let retryAfterSeconds = 0;
 
-      if (!response.ok) throw new Error("API Error");
+          try {
+            const errorData = await response.json(); // Try to parse as JSON
+            retryAfterSeconds = errorData.retryAfter || parseInt(retryAfterHeader, 10);
+          } catch {
+            retryAfterSeconds = parseInt(retryAfterHeader, 10); // Fallback to header
+          }
+
+          if (!isNaN(retryAfterSeconds)) {
+            setRetryAfter(retryAfterSeconds);
+          } else {
+            console.error("Unable to determine retry time.");
+          }
+
+          setRemainingUpload(0);
+          notifyRateLimiter();
+          return;
+        }
 
       const responseRemaining = response.headers.get("remaining-limit");
-      setRemainingUpload(parseInt(responseRemaining));
+        setRemainingUpload(parseInt(responseRemaining, 10));
 
-      const results = await response.json();
-      console.log('LOG: ', results);
-      setResposeData(results);
-      toast.success("Captions generated successfully!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to generate captions.");
-    } finally {
-      setLoadingData(false);
-    }
+        const results = await response.json();
+        setResposeData(results);
+        toast.success("Captions generated successfully!");
+      } catch (error) {
+        console.error("Error submitting captions:", error);
+        toast.error("Failed to generate captions.");
+
+      if (error.status === 429 && error.error?.type === "insufficient_quota") {
+        return res.status(429).json({
+          error: "Quota exceeded. Please check your plan and billing details.",
+        });
+      }
+
+      } finally {
+        setLoadingData(false);
+      }
   };
 
   return (
@@ -157,8 +184,8 @@ const UploadPage = () => {
               {/* Left Section: Caption Crafting Suite */}
               <CaptionCraftingSuite
                   retryAfter={retryAfter}
+                  onComplete={handleRetryComplete}
                   remainingUpload={remainingUpload}
-                  setRemainingUpload={setRemainingUpload}
                   loadingData={loadingData}
                   setLoadingData={setLoadingData}
                   handleSubmitGenerateCaption={handleSubmitGenerateCaption}
@@ -172,8 +199,8 @@ const UploadPage = () => {
                   categoryOrThemeState={{ value: categoryOrThemeValueSelected, setValue: setCategoryOrThemeValueSelected }}
                   languagePreferenceState={{ value: languagePreferenceValueSelected, setValue: setLanguagePreferenceValueSelected }}
                   targetAudienceState={{ value: targetAudienceValueSelected, setValue: setTargetAudienceValueSelected }}
+                  generateValueState={{ value: generateVariantSelected, setValue: setGenerateVariantSelected }}
               />
-
 
               {/* Right Section: Image Preview */}
               <ImagePreviewSection
