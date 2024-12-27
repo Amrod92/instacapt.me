@@ -3,6 +3,7 @@ import {
     Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 } from "@/components/ui/carousel"
 import instacapt_logo from '../../../public/instacapt_logo.png';
+import toast from 'react-hot-toast';
 import VerifiedIcon from '../VerifiedIcon';
 import Image from "next/image";
 
@@ -25,19 +26,48 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
         })
     }, [api]);
 
+    const copyToClipboard = () => {
+        const activeCaption = responseData[current - 1]?.message?.content || "No content available.";
+        navigator.clipboard
+            .writeText(activeCaption)
+            .then(() => {
+                notifyClipboard();
+            })
+            .catch((err) => {
+                console.error("Failed to copy text: ", err);
+            });
+    };
+
+    const notifyClipboard = () =>
+        toast.custom((t) => (
+            <div
+                className={`${
+                    t.visible ? "animate-enter" : "animate-leave"
+                } flex items-center gap-2 p-2 bg-white shadow rounded-lg`}
+            >
+                <picture>
+                    <source srcSet="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4ab/512.webp" type="image/webp"/>
+                    <img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4ab/512.gif" alt="💫" width="30"
+                         height="30"/>
+                </picture>
+                <span className="text-gray-800">Copied to clipboard!</span>
+            </div>
+        ));
+
+
     return (<div
-            className="mx-auto w-full lg:w-1/2 p-2 flex justify-center max-w-3xl mt-4 bg-white items-center relative border-y border-b-gray-300">
-            {/* Header Section */}
-            <div className="h-full relative w-full ">
+        className="mx-auto w-full lg:w-1/2 p-2 flex justify-center max-w-3xl mt-4 bg-white items-center relative border-y border-b-gray-300">
+        {/* Header Section */}
+        <div className="h-full relative w-full ">
                 <div>
                     <div className="flex justify-between items-center py-2">
                         <div className="relative mt-1 flex">
-                            <div className="bg-gradient-to-tr from-yellow-400 to-purple-600 p-1 rounded-full">
-                                <div className="bg-white p-1 rounded-full">
+                            <div className="bg-gradient-to-tr from-yellow-400 to-purple-600 p-0.5 rounded-full">
+                                <div className="bg-white p-0.5 rounded-full">
                                     <Image
                                         src={instacapt_logo}
                                         alt="Profile Picture"
-                                        className="w-10 h-10 rounded-full object-cover"
+                                        className="w-10 h-10 rounded-full object-cover border border-slate-300/100"
                                         width={40}
                                         height={40}
                                     />
@@ -166,7 +196,7 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                     <>
                         {/* Like Section */}
                         <div className="text-sm flex flex-col space-y-3">
-                            <div className="w-full text-gray-700">
+                            <div className="w-full">
                                 Liked by{' '}
                                 <a href='https://www.instagram.com/zuck/' target='_blank' rel="noopener noreferrer">
                                     <span className='font-semibold'>zuck</span>
@@ -193,12 +223,9 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                         </div>
 
                         {/* Right Button */}
-                        <div className="mt-1.5">
+                        <div className="mt-1.5 float-end">
                             <button
-                                onClick={() => {
-                                    copyToClipboard();
-                                    notifyClipboard();
-                                }}
+                                onClick={copyToClipboard}
                                 className="flex items-center gap-1.5 rounded-md place-content-end pl-0 text-xs text-gray-700 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-200"
                             >
                                 <svg
@@ -238,7 +265,7 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                                     type="text"
                                     name="comment"
                                     id="comment"
-                                    placeholder="Add A Comment..."
+                                    placeholder="Add a comment..."
                                     className="w-full text-sm py-4 rounded-none focus:outline-none"
                                 />
                             </div>
