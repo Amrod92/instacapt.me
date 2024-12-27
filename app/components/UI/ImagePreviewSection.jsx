@@ -157,35 +157,40 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                     </div>
                 </div>
 
-                {/* Like Section */}
-                <div className="text-sm flex flex-col space-y-3">
-                    <div className="w-full text-gray-700">
-                        Liked by{' '}
-                        <a href='https://www.instagram.com/zuck/' target='_blank' rel="noopener noreferrer">
-                            <span className='font-semibold'>zuck</span>
-                        </a>{' '}
-                        and <span className='font-semibold'>others</span>
-                    </div>
-                </div>
-
                 {loadingData && !responseData[0]?.message.content && !retryAfter && (
                     <div className='max-w-sm animate-pulse overflow-hidden rounded'>
                         <div className='mb-2 h-6 bg-gray-300'></div>
                         <div className='h-4 w-2/3 bg-gray-300'></div>
                     </div>)}
-                {(responseData[0]?.message.content && !loadingData && retryAfter) || (responseData[0]?.message.content && !loadingData && !retryAfter) ? (<>
+                {(responseData[0]?.message.content && !loadingData && retryAfter) || (responseData[0]?.message.content && !loadingData && !retryAfter) ? (
+                    <>
+                        {/* Like Section */}
+                        <div className="text-sm flex flex-col space-y-3">
+                            <div className="w-full text-gray-700">
+                                Liked by{' '}
+                                <a href='https://www.instagram.com/zuck/' target='_blank' rel="noopener noreferrer">
+                                    <span className='font-semibold'>zuck</span>
+                                </a>{' '}
+                                and <span className='font-semibold'>others</span>
+                            </div>
+                        </div>
                     <div>
                         {/* Left Content */}
-                        <Carousel setApi={setApi}>
-                            <p className="flex items-center font-bold">InstaCapt.me <VerifiedIcon className="mx-1"/></p>
-                            <CarouselContent>
-                                {responseData.map((item, index) => (
-                                    <CarouselItem key={index}>
-                                        <span>{item.message?.content}</span>
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
-                        </Carousel>
+                        <div>
+                            <Carousel setApi={setApi}>
+                                <CarouselContent>
+                                    {responseData.map((item, index) => (
+                                        <CarouselItem key={index} className="contain-inline-size text-sm my-2">
+                                            <div>
+                                                <span className="font-bold inline-flex items-center">InstaCapt.me <VerifiedIcon
+                                                    className="mx-1"/></span>
+                                                <span>{item.message?.content}</span>
+                                            </div>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                            </Carousel>
+                        </div>
 
                         {/* Right Button */}
                         <div className="mt-1.5">
