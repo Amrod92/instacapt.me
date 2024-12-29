@@ -291,18 +291,20 @@ const CaptionCraftingSuite = ({
 
                             <DrawerFooter>
                                 {!loadingData ? (
-                                    <Button
-                                        type="button"
-                                        disabled={isAnyDropdownValueZero()}
-                                        onClick={handleSubmitGenerateCaption}
-                                        className={`text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 ${
-                                            isAnyDropdownValueZero()
-                                                ? "bg-purple-500 opacity-50"
-                                                : "bg-purple-500"
-                                        }`}
-                                    >
-                                        Generate Your Caption!
-                                    </Button>
+                                    <DrawerClose asChild>
+                                        <Button
+                                            type="button"
+                                            disabled={isAnyDropdownValueZero()}
+                                            onClick={handleSubmitGenerateCaption}
+                                            className={`text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 ${
+                                                isAnyDropdownValueZero()
+                                                    ? "bg-purple-500 opacity-50"
+                                                    : "bg-purple-500"
+                                            }`}
+                                        >
+                                            Generate Your Caption!
+                                        </Button>
+                                    </DrawerClose>
                                 ) : (
                                     <Button disabled>
                                         <span className="animate-spin mr-2">...</span>

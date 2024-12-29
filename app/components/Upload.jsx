@@ -62,7 +62,7 @@ const UploadPage = () => {
   };
 
   const updateTime = () => {
-    if (imageFile.length) {
+    if (!imageFile || imageFile.length) {
       const createdAt = new Date();
       setTime(formatRelativeTime(createdAt));
     }
@@ -164,7 +164,7 @@ const UploadPage = () => {
 
   return (
       <div className="mt-5 sm:mt-20">
-        {imageFile.length === 0 ? (
+        {(!imageFile || imageFile.length === 0) ? (
             <div className="justify-items-center">
               <div className="flex flex-col lg:flex-row items-center justify-center w-full px-4 mt-5 mx-auto max-w-4xl">
                 <UploadDropzone
@@ -208,8 +208,10 @@ const UploadPage = () => {
               {/* Right Section: Image Preview */}
               <ImagePreviewSection
                   imageFile={imageFile}
+                  setActualImageFile={setImageFile}
                   loadingData={loadingData}
                   responseData={responseData}
+                  setActualResposeData={setResposeData}
                   time={time}
                   retryAfter={retryAfter}
               />

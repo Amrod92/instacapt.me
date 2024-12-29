@@ -7,7 +7,8 @@ import toast from 'react-hot-toast';
 import VerifiedIcon from '../VerifiedIcon';
 import Image from "next/image";
 
-const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryAfter}) => {
+const ImagePreviewSection = ({imageFile, setActualImageFile, loadingData, responseData,
+                                 setActualResposeData,time, retryAfter}) => {
     const [api, setApi] = useState();
     const [current, setCurrent] = React.useState(0);
     const [count, setCount] = React.useState(0);
@@ -83,35 +84,34 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                         </div>
                         <button
                             type="button"
-                            className="relative p-2 focus:outline-none border-none bg-gray-100 rounded-full"
+                            className="relative p-2 focus:outline-none border-none bg-gray-100 rounded-full hover:bg-purple-500"
+                            onClick={() => {
+                                setActualImageFile(null);
+                                setActualResposeData([]);
+                            }}
                         >
-                            <svg
-                                className="w-5 h-5 text-gray-700"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                                ></path>
+                            <svg className="w-5 h-5 text-gray-700"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2" d="M6 18 17.94 6M18 18 6.06 6"/>
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                {/* Image Section */}
-                <div className="relative w-full h-full">
-                    <Image
-                        src={imageFile[0]}
-                        alt="Uploaded Image"
-                        className="rounded-lg w-full h-full object-cover"
-                        width={500}
-                        height={500}
-                    />
+            {/* Image Section */}
+            <div className="relative w-full h-full">
+                <Image
+                    src={imageFile[0]}
+                    alt="Uploaded Image"
+                    className="rounded-lg w-full h-full object-cover"
+                    width={500}
+                    height={500}
+                />
                 </div>
 
                 {/* Action Section */}
@@ -186,11 +186,6 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                     </div>
                 </div>
 
-                {loadingData && !responseData[0]?.content && !retryAfter && (
-                    <div className='max-w-sm animate-pulse overflow-hidden rounded'>
-                        <div className='mb-2 h-6 bg-gray-300'></div>
-                        <div className='h-4 w-2/3 bg-gray-300'></div>
-                    </div>)}
                 {(responseData[0]?.content && !loadingData && retryAfter) || (responseData[0]?.content && !loadingData && !retryAfter) ? (
                     <>
                         {/* Like Section */}
@@ -246,26 +241,43 @@ const ImagePreviewSection = ({imageFile, loadingData, responseData, time, retryA
                         </div>
                     </div>
                 </>) : loadingData && !retryAfter ? (
-                    <div className='max-w-sm animate-pulse overflow-hidden rounded'>
-                    <div className='mb-2 h-6 bg-gray-300'></div>
-                        <div className='h-4 w-2/3 bg-gray-300'></div>
-                    </div>) : null}
+                    <div className='contain-inline-size text-sm my-2 animate-pulse'>
+                        <div className="mt-1 space-y-2">
+                            <p className="font-bold inline-flex items-center w-full">
+                                InstaCapt.me <VerifiedIcon className="mx-1 size-4"/>
+                                <span className="bg-gray-300 h-4 w-full rounded block"></span>
+                            </p>
+                            <span className="bg-gray-300 h-4 w-full rounded block"></span>
+                            <span className="bg-gray-300 h-4 w-full rounded block"></span>
+                            <span className="bg-gray-300 h-4 w-2/3 rounded block"></span>
+                        </div>
+                    </div>) : (
+                    <div className="contain-inline-size text-sm my-2">
+                        <div>
+                                <span
+                                    className="font-bold inline-flex items-center">InstaCapt.me <VerifiedIcon
+                                    className="mx-1"/></span>
+                            <span className="text-purple-600">No caption yet? Time to unleash your creativity! Open the Caption Crafting Suite, pick your favorite option, and hit 'Generate Your Caption!!' to make the magic happen. ✨</span>
+                        </div>
+                    </div>
 
-                <div className='text-sm text-gray-500 mt-2'>
-                    View all 1,557 comments
-                </div>
+                )}
 
-                {/* Add Comment Section */}
-                <div className="z-50">
-                    <div>
-                        <div className="flex justify-between w-full">
-                            <div className="w-full">
-                                <input
-                                    type="text"
-                                    name="comment"
-                                    id="comment"
-                                    placeholder="Add a comment..."
-                                    className="w-full text-sm py-4 rounded-none focus:outline-none"
+            <div className='text-sm text-gray-500 mt-2'>
+                View all 1,557 comments
+            </div>
+
+            {/* Add Comment Section */}
+            <div className="z-50">
+                <div>
+                    <div className="flex justify-between w-full">
+                        <div className="w-full">
+                            <input
+                                type="text"
+                                name="comment"
+                                id="comment"
+                                placeholder="Add a comment..."
+                                className="w-full text-sm py-4 rounded-none focus:outline-none"
                                 />
                             </div>
                             <div className="w-20">
